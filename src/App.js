@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './components/Header/Header';
+import Hero from './components/Hero/Hero';
 import './App.css';
 
 function App() {
@@ -7,8 +8,7 @@ function App() {
     <div className="App">
       <Header />
       <main>
-        <h1>Unigine React Project</h1>
-        <p>Header component is now working!</p>
+        <Hero />
       </main>
     </div>
   );
