@@ -35,20 +35,13 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
     setIsProcessing(true);
     
     try {
-      // Extract base64 from data URL
       const base64Data = uploadedImage.split(',')[1];
-      
-      // Use the imported API function
       const enhancedStats = await extractAllData(base64Data);
-      
-      // Set the extracted stats
       setExtractedStats(enhancedStats);
       
-      // Call the callback if provided
       if (onProfileDisplayed) {
         onProfileDisplayed(enhancedStats);
       }
-      
     } catch (error) {
       console.error('Error processing image:', error);
       alert('Error processing image. Please try again with a clearer screenshot.');
@@ -89,30 +82,30 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
           {/* Stats Section */}
           <div className="stats-section">
             <div className="stats-container">
-              <div className="stats-left">
-                <div className="stat-item">
-                  <span className="stat-label">KILLS</span>
-                  <span className="stat-value kills">{extractedStats.kills}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">KD</span>
-                  <span className="stat-value kd-ratio">{calculateKD()}</span>
-                  <span className="stat-subtitle">KD: ATTACKER</span>
-                </div>
+              <div className="stat-item" data-index="1">
+                <span className="stat-label">KILLS</span>
+                <span className="stat-value kills">{extractedStats.kills}</span>
               </div>
-              
-              <div className="vertical-divider"></div>
-              
-              <div className="stats-right">
-                <div className="stat-item">
-                  <span className="stat-label">LEVEL</span>
-                  <span className="stat-value level">{extractedStats.level}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">GAMES</span>
-                  <span className="stat-value">{extractedStats.total_games}</span>
-                  <span className="stat-subtitle">ATTACKER</span>
-                </div>
+              <div className="stat-item" data-index="2">
+                <span className="stat-label">DEATHS</span>
+                <span className="stat-value">{extractedStats.deaths}</span>
+              </div>
+              <div className="stat-item" data-index="3">
+                <span className="stat-label">KD RATIO</span>
+                <span className="stat-value kd-ratio">{calculateKD()}</span>
+                <span className="stat-subtitle">ATTACKER</span>
+              </div>
+              <div className="stat-item" data-index="4">
+                <span className="stat-label">LEVEL</span>
+                <span className="stat-value level">{extractedStats.level}</span>
+              </div>
+              <div className="stat-item" data-index="5">
+                <span className="stat-label">GAMES</span>
+                <span className="stat-value games">{extractedStats.total_games}</span>
+              </div>
+              <div className="stat-item" data-index="6">
+                <span className="stat-label">SK ID</span>
+                <span className="stat-value">{extractedStats.sk_id}</span>
               </div>
             </div>
           </div>
@@ -198,4 +191,3 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
 };
 
 export default StatsUpload;
-
