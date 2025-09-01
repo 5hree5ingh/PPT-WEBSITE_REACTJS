@@ -1,4 +1,5 @@
 import React from 'react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import './Upcoming.css';
 import adityaLogo from '../../assests/teams-logo/aditya.png';
 import safuLogo from '../../assests/teams-logo/safu.png';
@@ -8,6 +9,8 @@ import eternatusLogo from '../../assests/teams-logo/eternatus.png';
 import brandonLogo from '../../assests/teams-logo/brandon.png';
 
 const Upcoming = () => {
+  useScrollReveal(); // Add this line for animations
+
   return (
     <section className="section upcoming" aria-labelledby="upcoming-label" id="tournament">
       <div className="container">

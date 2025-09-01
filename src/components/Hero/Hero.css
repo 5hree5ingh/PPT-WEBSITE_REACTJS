@@ -36,7 +36,7 @@
     padding-inline: 30px;
     clip-path: var(--clip-path-3);
     overflow: hidden;
-    z-index: 10;
+    z-index: 2;
   }
   
   .hero .btn::before {
