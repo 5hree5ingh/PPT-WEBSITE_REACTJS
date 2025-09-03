@@ -37,7 +37,7 @@ const Header = () => {
   return (
     <header className={`header ${isActive ? 'active' : ''}`}>
       <div className="container">
-        <a href="#home" className="logo">
+        <a href="/" className="logo">
           <img 
             src={logo} 
             width="110" 
@@ -49,12 +49,12 @@ const Header = () => {
         <nav className={`navbar ${isNavOpen ? 'active' : ''}`}>
           <ul className="navbar-list">
             <li className="navbar-item">
-              <a href="#home" className="navbar-link" onClick={handleNavClose}>
+              <a href="/" className="navbar-link" onClick={handleNavClose}>
                 home
               </a>
             </li>
             <li className="navbar-item">
-              <a href="#tournament" className="navbar-link" onClick={handleNavClose}>
+              <a href="/tournament" className="navbar-link" onClick={handleNavClose}>
                 tournament
               </a>
             </li>
@@ -64,24 +64,40 @@ const Header = () => {
               </a>
             </li>
             <li className="navbar-item">
-              <a href="#contact" className="navbar-link" onClick={handleNavClose}>
+              <a href="/contact" className="navbar-link" onClick={handleNavClose}>
                 contact
               </a>
             </li>
           </ul>
         </nav>
         
-        <button onClick={handleAuthClick} className="btn">Sign Up</button>
-        
         <button 
-          className={`nav-toggle-btn ${isNavOpen ? 'active' : ''}`}
-          onClick={handleNavToggle}
-          aria-label="toggle menu"
+          onClick={handleAuthClick} 
+          className="btn auth-btn-desktop"
         >
-          <span className="line line-1"></span>
-          <span className="line line-2"></span>
-          <span className="line line-3"></span>
+          Sign Up
         </button>
+        
+        {/* Mobile controls container */}
+        <div className="mobile-controls">
+          <button 
+            onClick={handleAuthClick} 
+            className="profile-icon auth-btn-mobile"
+            title="Sign Up / Sign In"
+          >
+            <ion-icon name="person-circle-outline"></ion-icon>
+          </button>
+          
+          <button 
+            className={`nav-toggle-btn ${isNavOpen ? 'active' : ''}`}
+            onClick={handleNavToggle}
+            aria-label="toggle menu"
+          >
+            <span className="line line-1"></span>
+            <span className="line line-2"></span>
+            <span className="line line-3"></span>
+          </button>
+        </div>
       </div>
 
             {/* Authentication Modal */}

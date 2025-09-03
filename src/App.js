@@ -8,6 +8,8 @@ import Footer from './components/Footer/Footer';
 import Cursor from './components/Cursor/Cursor';
 import BackToTop from './components/BackToTop/BackToTop';
 import TestExtraction from './components/TestExtraction/TestExtraction';
+import Tournament from './components/Tournament/Tournament';
+import Portfolio from './components/Portfolio/Portfolio';
 import './App.css';
 
 function HomePage() {
@@ -22,7 +24,6 @@ function HomePage() {
         </article>
       </main>
       <Footer />
-      <Cursor />
       <BackToTop />
     </>
   );
@@ -35,7 +36,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/test" element={<TestExtraction />} />
+          <Route path="/tournament" element={<Tournament />} />
+          <Route path="/contact" element={<Portfolio />} />
         </Routes>
+        <Cursor />
+        <BackToTop />
       </div>
     </Router>
   );

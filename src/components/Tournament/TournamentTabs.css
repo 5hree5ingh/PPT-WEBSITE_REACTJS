@@ -1,0 +1,246 @@
+.tournament-tabs {
+  width: 100%;
+  max-width: 1400px;
+  margin: 32px auto 80px auto;
+  padding: 0 32px;
+}
+
+.tabs-header {
+  position: relative;
+  isolation: isolate; /* create a local stacking context */
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  background: rgba(152, 65, 255, 0.08);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 14px;
+  padding: 12px;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+/* sliding indicator */
+.tab-indicator {
+  position: absolute;
+  border-radius: 12px;
+  background: var(--gradient-1);
+  box-shadow: 0 12px 28px rgba(152, 65, 255, 0.35);
+  transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), top 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1; /* below buttons, above header bg */
+  pointer-events: none;
+}
+
+.tab-btn {
+  position: relative;
+  z-index: 2; /* keep button above indicator during slide */
+  appearance: none;
+  border: 1px solid transparent;
+  background: rgba(11, 14, 44, 0.5);
+  color: var(--text-gainsboro);
+  padding: 14px 16px;
+  font-weight: var(--weight-semiBold);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-white);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(152, 65, 255, 0.25);
+}
+
+/* Active button is transparent so the indicator shows through cleanly */
+.tab-btn.active {
+  color: var(--text-white);
+  background: transparent;
+  box-shadow: none;
+}
+
+.tabs-content {
+  margin-top: 18px;
+  background: rgba(11, 14, 44, 0.6);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 14px;
+  padding: 22px;
+  color: var(--text-gainsboro);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+/* Smooth directional animations */
+.fade-slide-in { animation: tabFormFadeIn 0.3s ease-out; }
+.slide-in-right { animation: slideRight 0.35s ease-out; }
+.slide-in-left { animation: slideLeft 0.35s ease-out; }
+
+@keyframes tabFormFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .tournament-tabs { max-width: 1200px; padding: 0 24px; }
+  .tabs-header { grid-template-columns: repeat(3, 1fr); }
+  .tab-btn { padding: 12px 14px; font-size: 0.95rem; }
+}
+
+@media (max-width: 768px) {
+  .tournament-tabs { max-width: 1000px; padding: 0 16px; }
+  .tabs-header { grid-template-columns: repeat(2, 1fr); }
+  .tab-btn { padding: 10px 12px; font-size: 0.85rem; }
+}
+
+/* Teams Tab Styles */
+.teams-container {
+  width: 100%;
+}
+
+.teams-title {
+  color: var(--text-white);
+  margin-bottom: 24px;
+  font-size: 2rem;
+  font-weight: var(--weight-semiBold);
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.team-card {
+  background: linear-gradient(135deg, rgba(11, 14, 44, 0.8), rgba(11, 14, 44, 0.6));
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 18px;
+  padding: 12px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+}
+
+.team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(152, 65, 255, 0.15);
+  border-color: var(--bg-purple-alpha-50);
+  background: linear-gradient(135deg, rgba(11, 14, 44, 0.9), rgba(11, 14, 44, 0.7));
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bg-purple-alpha-20);
+}
+
+.team-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(152, 65, 255, 0.25);
+  border: 2px solid var(--bg-purple-alpha-30);
+  transition: all 0.3s ease;
+}
+
+.team-card:hover .team-logo {
+  box-shadow: 0 12px 32px rgba(152, 65, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.team-info {
+  flex: 1;
+}
+
+.team-captain {
+  color: var(--text-white);
+  margin: 0 0 4px 0;
+  font-size: 1.3rem;
+  font-weight: var(--weight-semiBold);
+}
+
+.team-category {
+  display: none;
+}
+
+.team-players h5 {
+  color: var(--text-white);
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  font-weight: var(--weight-semiBold);
+}
+
+.players-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.player-item {
+  color: var(--text-gainsboro);
+  padding: 8px 12px;
+  background: rgba(11, 14, 44, 0.4);
+  border: 1px solid var(--bg-purple-alpha-20);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(4px);
+}
+
+.player-item:hover {
+  background: rgba(152, 65, 255, 0.08);
+  border-color: var(--bg-purple-alpha-40);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(152, 65, 255, 0.15);
+}
+
+.player-name {
+  font-weight: var(--weight-medium);
+  color: var(--text-gainsboro);
+  font-size: 1.5rem;
+}
+
+.player-credits {
+  color: var(--bg-purple);
+  font-weight: var(--weight-semiBold);
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, rgba(152, 65, 255, 0.1), rgba(152, 65, 255, 0.05));
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bg-purple-alpha-30);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive for teams */
+@media (max-width: 768px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .team-card {
+    padding: 16px;
+  }
+  
+  .team-header {
+    gap: 12px;
+  }
+  
+  .team-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .players-list {
+    grid-template-columns: 1fr;
+  }
+}
