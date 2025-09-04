@@ -1,0 +1,363 @@
+/* Modal Overlay */
+.player-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal Container */
+.player-modal {
+  background: linear-gradient(135deg, var(--bg-dark-purple) 0%, var(--bg-purple) 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  height: 90vh;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--accent-primary);
+  position: relative;
+  animation: slideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.8) translateY(-50px);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Winner Badge */
+.winner-badge {
+  position: absolute;
+  top: 15px;
+  border-radius: 20px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+/* S5 Badge (Golden) */
+.badge-s5 {
+  right: 60px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border: 2px solid #ffd700;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* S3 Badge (Purple/Blue) */
+.badge-s3 {
+  right: 180px;
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  border: 2px solid #8b5cf6;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  animation: badgeGlowPurple 2s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+  from {
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes badgeGlowPurple {
+  from {
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.badge-icon {
+  font-size: 1rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.badge-text {
+  color: #1a1a1a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Close Button */
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-white);
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modal-close-btn:hover {
+  background: var(--bg-purple-alpha-30);
+  color: var(--accent-primary);
+  transform: scale(1.1);
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.modal-header {
+  text-align: center;
+  border-bottom: 2px solid var(--bg-purple-alpha-30);
+  padding-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.modal-kart {
+  margin-bottom: 10px;
+}
+
+.modal-kart img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--accent-primary);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.modal-kart img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.modal-name {
+  color: var(--text-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 10;
+}
+
+/* Modal Stats */
+.modal-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.modal-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.modal-stat {
+  background: var(--bg-purple-alpha-20);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  background-size: 200% 100%;
+  animation: gradientShift 2s ease infinite;
+}
+
+.modal-stat:hover {
+  background: var(--bg-purple-alpha-30);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-stat-label {
+  display: block;
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.modal-stat-value {
+  display: block;
+  color: var(--text-white);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Description */
+.modal-description {
+  background: var(--bg-purple-alpha-10);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 4px solid var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.modal-description h3 {
+  color: var(--text-white);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.modal-description p {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .player-modal {
+    padding: 20px;
+    max-width: 95%;
+    margin: 20px;
+    height: 90vh;
+  }
+  
+  .badge-s5 {
+    top: 10px;
+    right: 50px;
+    padding: 4px 8px;
+  }
+  
+  .badge-s3 {
+    top: 10px;
+    right: 140px;
+    padding: 4px 8px;
+  }
+  
+  .badge-text {
+    font-size: 0.7rem;
+  }
+  
+  .modal-name {
+    font-size: 1.3rem;
+  }
+  
+  .modal-kart img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .modal-stat-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .modal-stat {
+    padding: 12px;
+  }
+  
+  .modal-stat-value {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-modal {
+    padding: 15px;
+    margin: 10px;
+    height: 90vh;
+  }
+  
+  .badge-s5 {
+    top: 8px;
+    right: 45px;
+    padding: 3px 6px;
+  }
+  
+  .badge-s3 {
+    top: 8px;
+    right: 120px;
+    padding: 3px 6px;
+  }
+  
+  .badge-text {
+    font-size: 0.65rem;
+  }
+  
+  .modal-name {
+    font-size: 1.2rem;
+  }
+  
+  .modal-kart img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .modal-stat {
+    padding: 10px;
+  }
+  
+  .modal-stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .modal-stat-label {
+    font-size: 0.8rem;
+  }
+}

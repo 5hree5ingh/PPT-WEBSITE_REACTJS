@@ -97,3 +97,52 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--bg-purple-alpha-30);
 }
+
+/* Players Grid Layout */
+.reg-players-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reg-players-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-items: center;
+  padding: 20px 0;
+}
+
+@media (max-width: 1200px) {
+  .players-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .players-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .reg-players-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .players-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  
+  .reg-players-container {
+    padding: 10px;
+  }
+}

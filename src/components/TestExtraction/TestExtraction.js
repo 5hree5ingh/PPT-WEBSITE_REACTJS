@@ -150,18 +150,18 @@ const TestExtraction = () => {
                   <ion-icon name="cloud-upload-outline" className="upload-icon"></ion-icon>
                   <p className="upload-text">Upload SmashKarts Screenshot</p>
                   <p className="upload-hint">Click to browse or drag and drop</p>
-                  <input
-                    type="file"
+          <input
+            type="file"
                     id="stats-screenshot"
-                    accept="image/*"
+            accept="image/*"
                     required
                     className="file-input"
-                    onChange={handleImageUpload}
+            onChange={handleImageUpload}
                   />
                   <label htmlFor="stats-screenshot" className="file-label">
                     Choose File
-                  </label>
-                </div>
+          </label>
+        </div>
               </div>
             ) : (
               <div className="image-preview-section">
@@ -203,9 +203,9 @@ const TestExtraction = () => {
                     Reset All
                   </button>
                 </div>
-              </div>
-            )}
           </div>
+        )}
+      </div>
 
           {/* Custom Prompt Editor */}
           <div className="prompt-editor-section">
@@ -262,14 +262,14 @@ const TestExtraction = () => {
                       >
                         Complete Isolation
                       </button>
-                      <button 
+        <button 
                         onClick={() => setCustomPrompt("Cut out the kart and place it in absolute nothingness. No background colors, no transparency patterns, no shadows, no effects. Just the kart in empty space.")}
                         className="suggestion-btn"
-                      >
+        >
                         Cut & Isolate
-                      </button>
-                    </div>
-                    
+        </button>
+      </div>
+
                     <div className="alternative-approaches">
                       <p><strong>Alternative Approaches (AI Limitations):</strong></p>
                       <div className="suggestion-buttons">
@@ -306,8 +306,8 @@ const TestExtraction = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+        </div>
+      )}
           </div>
 
           {/* Logs Section */}
@@ -332,7 +332,7 @@ const TestExtraction = () => {
             </div>
             
             {showLogs && (
-              <div className="logs-container">
+        <div className="logs-container">
                 {logs.length === 0 ? (
                   <p className="no-logs">No logs yet. Start processing to see logs.</p>
                 ) : (
@@ -341,8 +341,8 @@ const TestExtraction = () => {
                       <div key={log.id} className={`log-item ${log.type}`}>
                         <span className="log-timestamp">[{log.timestamp}]</span>
                         <span className="log-message">{log.message}</span>
-                      </div>
-                    ))}
+            </div>
+          ))}
                   </div>
                 )}
               </div>
