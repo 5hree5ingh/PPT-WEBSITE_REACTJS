@@ -52,81 +52,90 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
 
   // If stats are extracted, show the profile card in the same modal
   if (extractedStats) {
-    return (
-      <div className="stats-upload-section">
-        <div className="profile-card">
-          {/* Game Title */}
-          <div className="game-title">
-            <h1>SMASHKARTS</h1>
-          </div>
+    const kd = parseFloat(calculateKD()) || 0;
+    const games = parseInt(extractedStats.total_games) || 0;
+    const kills = parseInt(extractedStats.kills) || 0;
+    const deaths = parseInt(extractedStats.deaths) || 0;
+    const skid = extractedStats.sk_id || 'N/A';
+    
+    // Generate random category (1-4)
+    const category = Math.floor(Math.random() * 4) + 1;
 
-          {/* Character and Kart Section */}
-          <div className="character-section">
-            {extractedStats.cart_image && (
-              <div className="cart-image-container">
-                <img
-                  src={extractedStats.cart_image}
-                  alt="Player's SmashKarts vehicle"
-                  className="cart-image"
+    return (
+      <div className="stats-upload-overlay" onClick={(e) => e.stopPropagation()}>
+        <div className="stats-upload-modal" onClick={(e) => e.stopPropagation()}>
+          <button 
+            className="modal-close-btn" 
+            onClick={() => {
+              setExtractedStats(null);
+              setUploadedImage(null);
+            }}
+          >
+            ×
+          </button>
+          
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="modal-kart">
+                <img 
+                  src={extractedStats.cart_image || '/default-kart.png'} 
+                  alt={`${extractedStats.discord_username}'s kart`}
+                  onError={(e) => {
+                    e.target.src = '/default-kart.png';
+                  }}
                 />
               </div>
-            )}
+              <h2 className="modal-name">{extractedStats.discord_username}</h2>
           </div>
 
-          {/* Player Name Section */}
-          <div className="player-name-section">
-            <h2 className="player-name">{extractedStats.discord_username}</h2>
-            <div className="divider-line"></div>
+            <div className="modal-stats">
+              <div className="modal-stat-row">
+                <div className="modal-stat">
+                  <span className="modal-stat-label">K/D Ratio</span>
+                  <span className="modal-stat-value">{kd.toFixed(2)}</span>
+                </div>
+                <div className="modal-stat">
+                  <span className="modal-stat-label">Games Played</span>
+                  <span className="modal-stat-value">{games}</span>
+                </div>
           </div>
 
-          {/* Stats Section */}
-          <div className="stats-section">
-            <div className="stats-container">
-              <div className="stat-item" data-index="1">
-                <span className="stat-label">KILLS</span>
-                <span className="stat-value kills">{extractedStats.kills}</span>
+              <div className="modal-stat-row">
+                <div className="modal-stat">
+                  <span className="modal-stat-label">Level</span>
+                  <span className="modal-stat-value">{extractedStats.level || 0}</span>
+                </div>
+                <div className="modal-stat">
+                  <span className="modal-stat-label">Category</span>
+                  <span className="modal-stat-value">{category}</span>
+                </div>
               </div>
-              <div className="stat-item" data-index="2">
-                <span className="stat-label">DEATHS</span>
-                <span className="stat-value">{extractedStats.deaths}</span>
-              </div>
-              <div className="stat-item" data-index="3">
-                <span className="stat-label">KD RATIO</span>
-                <span className="stat-value kd-ratio">{calculateKD()}</span>
-                <span className="stat-subtitle">ATTACKER</span>
-              </div>
-              <div className="stat-item" data-index="4">
-                <span className="stat-label">LEVEL</span>
-                <span className="stat-value level">{extractedStats.level}</span>
-              </div>
-              <div className="stat-item" data-index="5">
-                <span className="stat-label">GAMES</span>
-                <span className="stat-value games">{extractedStats.total_games}</span>
-              </div>
-              <div className="stat-item" data-index="6">
-                <span className="stat-label">SK ID</span>
-                <span className="stat-value">{extractedStats.sk_id}</span>
+              
+              <div className="modal-stat-row">
+                <div className="modal-stat">
+                  <span className="modal-stat-label">Kills</span>
+                  <span className="modal-stat-value">{kills}</span>
+                </div>
+                <div className="modal-stat">
+                  <span className="modal-stat-label">Deaths</span>
+                  <span className="modal-stat-value">{deaths}</span>
+                </div>
               </div>
             </div>
+
+            <div className="modal-skid">
+              <h3>Skid</h3>
+              <p>{skid}</p>
           </div>
 
-          {/* Bottom Divider */}
-          <div className="bottom-divider"></div>
-
-          {/* Profile Actions */}
-          <div className="profile-actions">
-            <button className="register-btn">
-              REGISTER FOR TOURNEY
+            <div className="modal-actions">
+              <button className="register-tournament-btn">
+                REGISTER FOR TOURNAMENT
             </button>
-            <button
-              onClick={() => {
-                setExtractedStats(null);
-                setUploadedImage(null);
-              }}
-              className="back-btn"
-            >
-              Upload Another Image
+              <button className="edit-info-btn">
+                EDIT INFO
             </button>
+            </div>
           </div>
         </div>
       </div>
@@ -154,11 +163,11 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
             </label>
           </div>
         </div>
-      ) : (
+      ) : !extractedStats ? (
         <div className="image-preview-section">
           <div className="image-preview">
             <img src={uploadedImage} alt="Uploaded Stats" className="uploaded-image" />
-            <button 
+            <button
               onClick={() => setUploadedImage(null)}
               className="remove-image-btn"
               title="Remove image"
@@ -166,8 +175,8 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
               <ion-icon name="close-outline"></ion-icon>
             </button>
           </div>
-          
-          <button 
+
+          <button
             onClick={handleUploadStats}
             disabled={isProcessing}
             className="auth-submit-btn"
@@ -185,7 +194,7 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
             )}
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

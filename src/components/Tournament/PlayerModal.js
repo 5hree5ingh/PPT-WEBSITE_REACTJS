@@ -18,7 +18,7 @@ const PlayerModal = ({ player, isOpen, onClose }) => {
   const category = Math.floor(Math.random() * 4) + 1;
 
   return (
-    <div className="player-modal-overlay" onClick={onClose}>
+    <div className="player-modal-overlay" onClick={(e) => e.stopPropagation()}>
       <div className="player-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose}>
           ×

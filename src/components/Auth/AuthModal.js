@@ -46,7 +46,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="auth-modal-overlay" onClick={handleCloseModal}>
+    <div className="auth-modal-overlay" onClick={(e) => e.stopPropagation()}>
       <div className={`auth-modal ${showPlayerProfile ? 'profile-mode' : ''}`} onClick={(e) => e.stopPropagation()}>
         <button className="auth-modal-close" onClick={handleCloseModal}>
           <ion-icon name="close-outline"></ion-icon>

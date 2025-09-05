@@ -1,3 +1,329 @@
+/* Stats Upload Modal Overlay */
+.stats-upload-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Stats Upload Modal Container */
+.stats-upload-modal {
+  background: linear-gradient(135deg, var(--bg-dark-purple) 0%, var(--bg-purple) 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  height: 95vh;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(152, 65, 255, 0.3),
+    0 0 60px rgba(152, 65, 255, 0.2);
+  border: 2px solid var(--accent-primary);
+  position: relative;
+  animation: slideIn 0.3s ease, modalGlow 2s ease-in-out infinite alternate;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.8) translateY(-50px);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalGlow {
+  from {
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(152, 65, 255, 0.3),
+      0 0 60px rgba(152, 65, 255, 0.2);
+  }
+  to {
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(152, 65, 255, 0.5),
+      0 0 80px rgba(152, 65, 255, 0.3);
+  }
+}
+
+/* Close Button */
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-white);
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modal-close-btn:hover {
+  background: var(--bg-purple-alpha-30);
+  color: var(--accent-primary);
+  transform: scale(1.1);
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.modal-header {
+  text-align: center;
+  border-bottom: 2px solid var(--bg-purple-alpha-30);
+  padding-bottom: 5px;
+  flex-shrink: 0;
+}
+
+.modal-kart {
+  margin-bottom: 0px;
+}
+
+.modal-kart img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--accent-primary);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.modal-kart img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.modal-name {
+  color: var(--text-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 10;
+}
+
+/* Modal Stats */
+.modal-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.modal-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.modal-stat {
+  background: var(--bg-purple-alpha-20);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  background-size: 200% 100%;
+  animation: gradientShift 2s ease infinite;
+}
+
+.modal-stat:hover {
+  background: var(--bg-purple-alpha-30);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-stat-label {
+  display: block;
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.modal-stat-value {
+  display: block;
+  color: var(--text-white);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Skid */
+.modal-skid {
+  background: var(--bg-purple-alpha-10);
+  border: 1px solid var(--bg-purple-alpha-30);
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 4px solid var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.modal-skid h3 {
+  color: var(--text-white);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.modal-skid p {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+
+.register-tournament-btn {
+  flex: 1;
+  background: var(--gradient-1);
+  color: var(--text-white);
+  border: none;
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.register-tournament-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.register-tournament-btn:hover::before {
+  left: 100%;
+}
+
+.register-tournament-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.edit-info-btn {
+  flex: 1;
+  background: var(--bg-purple-alpha-20);
+  color: var(--text-white);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.edit-info-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-1);
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.edit-info-btn:hover::before {
+  opacity: 1;
+}
+
+.edit-info-btn:hover {
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Hide background content when modal is open */
+body:has(.stats-upload-overlay) {
+  overflow: hidden;
+}
+
+body:has(.stats-upload-overlay) .stats-upload-section {
+  display: none;
+}
+
 /* Profile Card Styles - Professional Gaming Design */
 .profile-card {
   background: linear-gradient(135deg, var(--bg-oxford-blue), var(--bg-dark-purple));
@@ -227,6 +553,45 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .stats-upload-modal {
+    padding: 20px;
+    max-width: 95%;
+    margin: 20px;
+    height: 95vh;
+  }
+  
+  .modal-name {
+    font-size: 1.3rem;
+  }
+  
+  .modal-kart img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .modal-stat-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .modal-stat {
+    padding: 12px;
+  }
+  
+  .modal-stat-value {
+    font-size: 1.2rem;
+  }
+  
+  .modal-actions {
+    gap: 10px;
+  }
+  
+  .register-tournament-btn,
+  .edit-info-btn {
+    font-size: 0.8rem;
+    padding: 12px 15px;
+  }
+  
   .profile-card {
     padding: 20px;
   }
@@ -275,6 +640,43 @@
 }
 
 @media (max-width: 480px) {
+  .stats-upload-modal {
+    padding: 15px;
+    margin: 10px;
+    height: 95vh;
+  }
+  
+  .modal-name {
+    font-size: 1.2rem;
+  }
+  
+  .modal-kart img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .modal-stat {
+    padding: 10px;
+  }
+  
+  .modal-stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .modal-stat-label {
+    font-size: 0.8rem;
+  }
+  
+  .modal-actions {
+    gap: 8px;
+  }
+  
+  .register-tournament-btn,
+  .edit-info-btn {
+    font-size: 0.75rem;
+    padding: 10px 12px;
+  }
+  
   .profile-card {
     padding: 15px;
   }
