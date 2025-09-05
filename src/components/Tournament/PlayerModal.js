@@ -1,5 +1,7 @@
 import React from 'react';
 import './PlayerModal.css';
+import Badge from './Badge';
+import { getPlayerBadges } from '../../utils/badgeConfig';
 
 const PlayerModal = ({ player, isOpen, onClose }) => {
   if (!isOpen || !player) return null;
@@ -10,6 +12,10 @@ const PlayerModal = ({ player, isOpen, onClose }) => {
   const kills = Math.round((kd * games) / (1 + kd));
   const deaths = games - kills;
   const skid = player.s_id || 'N/A';
+  const playerBadges = getPlayerBadges(player);
+  
+  // Generate random category (1-4)
+  const category = Math.floor(Math.random() * 4) + 1;
 
   return (
     <div className="player-modal-overlay" onClick={onClose}>
@@ -18,18 +24,15 @@ const PlayerModal = ({ player, isOpen, onClose }) => {
           ×
         </button>
         
-        {player.name.toLowerCase().includes('sinnocent') && (
-          <>
-            <div className="winner-badge badge-s5">
-              <span className="badge-icon">🏆</span>
-              <span className="badge-text">PPL S3 Winner</span>
-            </div>
-            <div className="winner-badge badge-s3">
-              <span className="badge-icon">🏆</span>
-              <span className="badge-text">PPL S2 Winner</span>
-            </div>
-          </>
-        )}
+        {playerBadges.map((badge, index) => (
+          <div 
+            key={badge.id}
+            className="modal-badge-container"
+            style={{ right: `${60 + (index * 110)}px` }}
+          >
+            <Badge badge={badge} size="normal" />
+          </div>
+        ))}
         
         <div className="modal-content">
           <div className="modal-header">
@@ -48,23 +51,23 @@ const PlayerModal = ({ player, isOpen, onClose }) => {
           <div className="modal-stats">
             <div className="modal-stat-row">
               <div className="modal-stat">
-                <span className="modal-stat-label">Skid</span>
-                <span className="modal-stat-value">{skid}</span>
-              </div>
-              <div className="modal-stat">
                 <span className="modal-stat-label">K/D Ratio</span>
                 <span className="modal-stat-value">{kd.toFixed(2)}</span>
+              </div>
+              <div className="modal-stat">
+                <span className="modal-stat-label">Games Played</span>
+                <span className="modal-stat-value">{games}</span>
               </div>
             </div>
 
             <div className="modal-stat-row">
               <div className="modal-stat">
-                <span className="modal-stat-label">Games Played</span>
-                <span className="modal-stat-value">{games}</span>
-              </div>
-              <div className="modal-stat">
                 <span className="modal-stat-label">Level</span>
                 <span className="modal-stat-value">{player.level || 0}</span>
+              </div>
+              <div className="modal-stat">
+                <span className="modal-stat-label">Category</span>
+                <span className="modal-stat-value">{category}</span>
               </div>
             </div>
 
@@ -78,6 +81,11 @@ const PlayerModal = ({ player, isOpen, onClose }) => {
                 <span className="modal-stat-value">{deaths}</span>
               </div>
             </div>
+          </div>
+
+          <div className="modal-skid">
+            <h3>Skid</h3>
+            <p>{skid}</p>
           </div>
 
           {player.description && (
