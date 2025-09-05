@@ -1,5 +1,7 @@
 import React from 'react';
 import './PlayerCard.css';
+import Badge from './Badge';
+import { getPlayerBadges } from '../../utils/badgeConfig';
 
 const PlayerCard = ({ player, onClick }) => {
   // Calculate kills and deaths from kd ratio and games played
@@ -8,21 +10,19 @@ const PlayerCard = ({ player, onClick }) => {
   const kills = Math.round((kd * games) / (1 + kd));
   const deaths = games - kills;
   const skid = player.s_id || 'N/A';
+  const playerBadges = getPlayerBadges(player);
 
   return (
     <div className="player-card" onClick={onClick}>
-      {player.name.toLowerCase().includes('sinnocent') && (
-        <>
-          <div className="card-winner-badge card-badge-s5">
-            <span className="card-badge-icon">🏆</span>
-            <span className="card-badge-text">PPL S3 Winner</span>
-          </div>
-          <div className="card-winner-badge card-badge-s3">
-            <span className="card-badge-icon">🏆</span>
-            <span className="card-badge-text">PPL S2 Winner</span>
-          </div>
-        </>
-      )}
+      {playerBadges.map((badge, index) => (
+        <div 
+          key={badge.id}
+          className="card-badge-container"
+          style={{ right: `${8 + (index * 93)}px` }}
+        >
+          <Badge badge={badge} size="small" />
+        </div>
+      ))}
       
       <div className="player-kart">
         <img 

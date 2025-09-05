@@ -13,17 +13,11 @@
   cursor: pointer;
 }
 
-/* Card Winner Badge */
-.card-winner-badge {
+/* Card Badge Container */
+.card-badge-container {
   position: absolute;
   top: 8px;
-  border-radius: 12px;
-  padding: 3px 6px;
-  display: flex;
-  align-items: center;
-  gap: 3px;
   z-index: 10;
-  animation: cardBadgeGlow 2s ease-in-out infinite alternate;
 }
 
 /* S5 Badge (Golden) */

@@ -1,0 +1,149 @@
+/* Badge Component Styles */
+.badge {
+  border-radius: 12px;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 10;
+  border: 1px solid;
+  position: relative;
+}
+
+.badge-normal {
+  border-radius: 20px;
+  padding: 6px 12px;
+  gap: 6px;
+}
+
+.badge-small {
+  border-radius: 12px;
+  padding: 3px 6px;
+  gap: 3px;
+}
+
+/* S5 Badge (Golden) */
+.card-badge-ppl_s5_winner {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-color: #ffd700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  animation: cardBadgeGlow 2s ease-in-out infinite alternate;
+}
+
+.badge-ppl_s5_winner {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-color: #ffd700;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+/* S3 Badge (Purple/Blue) */
+.card-badge-ppl_s3_winner {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  border-color: #8b5cf6;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+  animation: cardBadgeGlowPurple 2s ease-in-out infinite alternate;
+}
+
+.badge-ppl_s3_winner {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  animation: badgeGlowPurple 2s ease-in-out infinite alternate;
+}
+
+@keyframes cardBadgeGlow {
+  from {
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  }
+  to {
+    box-shadow: 0 3px 12px rgba(255, 215, 0, 0.5);
+  }
+}
+
+@keyframes cardBadgeGlowPurple {
+  from {
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+  }
+  to {
+    box-shadow: 0 3px 12px rgba(139, 92, 246, 0.5);
+  }
+}
+
+@keyframes badgeGlow {
+  from {
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes badgeGlowPurple {
+  from {
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+  }
+}
+
+.badge-icon {
+  font-size: 0.7rem;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.badge-normal .badge-icon {
+  font-size: 1rem;
+}
+
+.badge-text {
+  color: #1a1a1a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.badge-normal .badge-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .badge-small {
+    padding: 2px 4px;
+  }
+  
+  .badge-normal {
+    padding: 4px 8px;
+  }
+  
+  .badge-text {
+    font-size: 0.55rem;
+  }
+  
+  .badge-normal .badge-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .badge-small {
+    padding: 2px 3px;
+  }
+  
+  .badge-normal {
+    padding: 3px 6px;
+  }
+  
+  .badge-text {
+    font-size: 0.5rem;
+  }
+  
+  .badge-normal .badge-text {
+    font-size: 0.65rem;
+  }
+}
