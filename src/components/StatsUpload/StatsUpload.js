@@ -1,11 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { extractAllData } from '../StatsAPI/apiLogic';
+import { useAuth } from '../../contexts/AuthContext';
 import './StatsUpload.css';
 
 const StatsUpload = ({ onClose, onProfileDisplayed }) => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [extractedStats, setExtractedStats] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [error, setError] = useState('');
+  const [showTournamentPopup, setShowTournamentPopup] = useState(false);
+  const [countdown, setCountdown] = useState(6);
+
+  const { isAuthenticated, saveStats, registerForTournament, unregisterFromTournament, getTournamentStatus } = useAuth();
+
+  // Countdown effect
+  useEffect(() => {
+    let interval;
+    if (showTournamentPopup && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      window.location.href = '/tournament';
+    }
+    return () => clearInterval(interval);
+  }, [showTournamentPopup, countdown]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -39,6 +60,11 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
       const enhancedStats = await extractAllData(base64Data);
       setExtractedStats(enhancedStats);
       
+      // Auto-save stats if user is authenticated
+      if (isAuthenticated) {
+        await handleSaveStats(enhancedStats);
+      }
+      
       if (onProfileDisplayed) {
         onProfileDisplayed(enhancedStats);
       }
@@ -48,6 +74,87 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleSaveStats = async (stats) => {
+    if (!isAuthenticated) {
+      setError('Please login to save your stats');
+      return;
+    }
+
+    setIsSaving(true);
+    setError('');
+
+    try {
+      const statsData = {
+        sk_id: stats.sk_id,
+        level: parseInt(stats.level) || 0,
+        kills: parseInt(stats.kills) || 0,
+        deaths: parseInt(stats.deaths) || 0,
+        games_played: parseInt(stats.total_games) || 0,
+        kd: parseFloat(calculateKD()) || 0,
+        cart_image: stats.cart_image,
+        description: stats.description || '',
+        category: Math.floor(Math.random() * 4) + 1,
+        preferred_role: 'Player'
+      };
+
+      const result = await saveStats(statsData);
+      
+      if (result.success) {
+        // Check tournament registration status (no popup for stats saved)
+        await checkTournamentStatus();
+      } else {
+        setError(result.error);
+      }
+    } catch (error) {
+      setError('Failed to save stats');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const checkTournamentStatus = async () => {
+    try {
+      const result = await getTournamentStatus('PPL7');
+      if (result.success) {
+        setIsRegistered(result.data.registered);
+      }
+    } catch (error) {
+      console.error('Error checking tournament status:', error);
+    }
+  };
+
+  const handleTournamentRegistration = async () => {
+    if (!isAuthenticated) {
+      setError('Please login to register for tournament');
+      return;
+    }
+
+    try {
+      const result = isRegistered 
+        ? await unregisterFromTournament('PPL7')
+        : await registerForTournament('PPL7');
+      
+      if (result.success) {
+        setIsRegistered(!isRegistered);
+        if (!isRegistered) {
+          // Show tournament registration popup and start countdown
+          setCountdown(6);
+          setShowTournamentPopup(true);
+        }
+      } else {
+        setError(result.error);
+      }
+    } catch (error) {
+      setError('Failed to update tournament registration');
+    }
+  };
+
+  const handleEditInfo = () => {
+    setExtractedStats(null);
+    setUploadedImage(null);
+    setError('');
   };
 
   // If stats are extracted, show the profile card in the same modal
@@ -64,6 +171,21 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
     return (
       <div className="stats-upload-overlay" onClick={(e) => e.stopPropagation()}>
         <div className="stats-upload-modal" onClick={(e) => e.stopPropagation()}>
+          {showTournamentPopup && (
+            <div className="tournament-registration-popup">
+              <div className="popup-content">
+                <div className="popup-icon">
+                  <ion-icon name="trophy"></ion-icon>
+                </div>
+                <h2>🎉 Registration Successful!</h2>
+                <div className="popup-countdown">
+                  <div className="countdown-circle">
+                    <span className="countdown-number">{countdown}</span>
+                  </div>
+                </div>
+              </div>
+          </div>
+          )}
           <button 
             className="modal-close-btn" 
             onClick={() => {
@@ -128,12 +250,21 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
               <p>{skid}</p>
           </div>
 
+            {error && <div className="stats-message error">{error}</div>}
+
             <div className="modal-actions">
-              <button className="register-tournament-btn">
-                REGISTER FOR TOURNAMENT
+              <button 
+                className={`register-tournament-btn ${isRegistered ? 'registered' : ''}`}
+                onClick={handleTournamentRegistration}
+                disabled={isSaving}
+              >
+                {isSaving ? 'Processing...' : (isRegistered ? 'UNREGISTER FROM TOURNAMENT' : 'REGISTER FOR TOURNAMENT')}
             </button>
-              <button className="edit-info-btn">
-                EDIT INFO
+            <button
+                className="edit-info-btn"
+                onClick={handleEditInfo}
+              >
+                REUPLOAD SK STATS
             </button>
             </div>
           </div>
@@ -167,7 +298,7 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
         <div className="image-preview-section">
           <div className="image-preview">
             <img src={uploadedImage} alt="Uploaded Stats" className="uploaded-image" />
-            <button
+            <button 
               onClick={() => setUploadedImage(null)}
               className="remove-image-btn"
               title="Remove image"
@@ -175,8 +306,8 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
               <ion-icon name="close-outline"></ion-icon>
             </button>
           </div>
-
-          <button
+          
+          <button 
             onClick={handleUploadStats}
             disabled={isProcessing}
             className="auth-submit-btn"
