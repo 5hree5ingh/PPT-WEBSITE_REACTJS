@@ -20,6 +20,11 @@
     color: var(--text-white);
     line-height: 1;
   }
+
+  .hero-register-btn {
+    margin: 20px auto;
+    display: block;
+  }
   
   .hero .btn {
     margin-inline: auto;

@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const response = await apiService.getProfile();
-          setUser(response.user);
+          setUser(response); // Backend returns user data directly
           setIsAuthenticated(true);
         } catch (error) {
           console.error('Auth check failed:', error);
@@ -57,7 +57,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await apiService.login(email, password);
-      setUser(response.user);
+      // After successful login, fetch the full user profile with progress flags
+      const profileResponse = await apiService.getProfile();
+      setUser(profileResponse);
       setIsAuthenticated(true);
       return { success: true, data: response };
     } catch (error) {
@@ -71,7 +73,9 @@ export const AuthProvider = ({ children }) => {
       console.log('AuthContext - googleLogin called with:', userData);
       const response = await apiService.googleLogin(userData);
       console.log('AuthContext - API response:', response);
-      setUser(response.user);
+      // After successful Google login, fetch the full user profile with progress flags
+      const profileResponse = await apiService.getProfile();
+      setUser(profileResponse);
       setIsAuthenticated(true);
       console.log('AuthContext - User set, isAuthenticated set to true');
       return { success: true, data: response };

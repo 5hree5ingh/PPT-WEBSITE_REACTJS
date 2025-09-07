@@ -15,16 +15,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [showDiscordUsernameInput, setShowDiscordUsernameInput] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  // Handle initial mode
-  useEffect(() => {
-    if (initialMode === 'statsUpload') {
-      setShowStatsUpload(true);
-    } else if (initialMode === 'signup') {
-      setIsSignUp(true);
-    }
-  }, [initialMode]);
-
-
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -35,7 +25,39 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const { signup, login, googleLogin } = useAuth();
+  const { signup, login, googleLogin, isAuthenticated, user, getTournamentStatus } = useAuth();
+
+  // Handle initial mode and user state
+  useEffect(() => {
+    if (initialMode === 'statsUpload') {
+      setShowStatsUpload(true);
+    } else if (initialMode === 'signup') {
+      setIsSignUp(true);
+    } else if (initialMode === 'register') {
+      // Check user state for register mode
+      if (isAuthenticated && user) {
+        // User is already signed up, show stats upload screen
+        setShowStatsUpload(true);
+      } else {
+        // User not signed up, show signup form
+        setIsSignUp(true);
+      }
+    }
+  }, [initialMode, isAuthenticated, user]);
+
+  // Handle when user becomes authenticated during the modal session
+  useEffect(() => {
+    console.log('Auth state changed - isAuthenticated:', isAuthenticated, 'user:', user, 'showDiscordUsernameInput:', showDiscordUsernameInput, 'showStatsUpload:', showStatsUpload, 'initialMode:', initialMode);
+    
+    // Show stats upload for both register and signup modes (tournament registration flow)
+    if (isAuthenticated && user && (initialMode === 'register' || initialMode === 'signup') && !showDiscordUsernameInput && !showStatsUpload) {
+      console.log('User became authenticated, showing stats upload screen');
+      
+      setShowStatsUpload(true);
+      setIsSignUp(false);
+      setShowEmailVerification(false);
+    }
+  }, [isAuthenticated, user, showDiscordUsernameInput, showStatsUpload, initialMode]);
 
   // Google OAuth handlers
   const handleGoogleSuccess = async (tokenResponse) => {
@@ -69,7 +91,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         setMessage('Google login successful!');
         console.log('Google login successful, showing Discord username input...');
         
-        // Show Discord username input after Google login
+        // Always show Discord username input after Google login
         setShowDiscordUsernameInput(true);
         setMessage('');
       } else {
@@ -185,7 +207,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     try {
       const result = await login(formData.email, formData.password);
       if (result.success) {
-        // Show stats upload immediately after successful login
+        // Show stats upload screen for both register and signup modes
         setShowStatsUpload(true);
         setShowEmailVerification(false);
         setIsVerifying(false);
@@ -205,7 +227,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
   const handleDiscordUsernameComplete = (discordUsername) => {
     console.log('Discord username completed:', discordUsername);
-    // Show stats upload after Discord username is entered
+    console.log('Current auth state - isAuthenticated:', isAuthenticated, 'user:', user, 'initialMode:', initialMode);
+    
+    // Show stats upload screen for both register and signup modes
     setShowStatsUpload(true);
     setShowDiscordUsernameInput(false);
   };

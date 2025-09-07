@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { extractAllData } from '../StatsAPI/apiLogic';
 import { useAuth } from '../../contexts/AuthContext';
+import RegisterButton from '../RegisterButton';
 import './StatsUpload.css';
 
 const StatsUpload = ({ onClose, onProfileDisplayed }) => {
@@ -12,8 +13,10 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
   const [error, setError] = useState('');
   const [showTournamentPopup, setShowTournamentPopup] = useState(false);
   const [countdown, setCountdown] = useState(6);
+  const [shouldAutoRegister, setShouldAutoRegister] = useState(false);
+  const [showAlreadyRegistered, setShowAlreadyRegistered] = useState(false);
 
-  const { isAuthenticated, saveStats, registerForTournament, unregisterFromTournament, getTournamentStatus } = useAuth();
+  const { isAuthenticated, saveStats, registerForTournament, unregisterFromTournament, getTournamentStatus, user } = useAuth();
 
   // Countdown effect
   useEffect(() => {
@@ -27,6 +30,42 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
     }
     return () => clearInterval(interval);
   }, [showTournamentPopup, countdown]);
+
+  // Auto-register effect when user becomes authenticated
+  useEffect(() => {
+    console.log('Auto-register effect triggered, isAuthenticated:', isAuthenticated, 'shouldAutoRegister:', shouldAutoRegister);
+    if (isAuthenticated && shouldAutoRegister) {
+      console.log('Auto-registering for tournament');
+      setShouldAutoRegister(false);
+      // Check if user has stats first, if not, they need to upload stats
+      if (user && user.stats_data) {
+        handleTournamentRegistration();
+      } else {
+        // User needs to upload stats first
+        console.log('User needs to upload stats first');
+      }
+    }
+  }, [isAuthenticated, shouldAutoRegister, user]);
+
+  // Check user state when component mounts
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log('User is authenticated, checking progress flags:', {
+        verified_email: user.verified_email,
+        sk_stats_uploaded: user.sk_stats_uploaded,
+        tournament_registered: user.tournament_registered
+      });
+      
+      checkTournamentStatus();
+      
+      // Check if user has already uploaded stats using the database flag
+      if (user.sk_stats_uploaded) {
+        console.log('User has uploaded stats, loading them');
+        // Load stats from user_stats table via API
+        loadUserStats();
+      }
+    }
+  }, [isAuthenticated, user]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -119,35 +158,78 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
       const result = await getTournamentStatus('PPL7');
       if (result.success) {
         setIsRegistered(result.data.registered);
+        if (result.data.registered) {
+          setShowAlreadyRegistered(true);
+        }
       }
     } catch (error) {
       console.error('Error checking tournament status:', error);
     }
   };
 
-  const handleTournamentRegistration = async () => {
+  const loadUserStats = async () => {
+    try {
+      const response = await fetch('/api/stats/get', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.stats) {
+          setExtractedStats(data.stats);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user stats:', error);
+    }
+  };
+
+  const handleTournamentRegistration = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log('Register button clicked, isAuthenticated:', isAuthenticated, 'isRegistered:', isRegistered);
+    
     if (!isAuthenticated) {
-      setError('Please login to register for tournament');
+      console.log('User not authenticated, dispatching auth event');
+      // Dispatch custom event to open auth modal in register mode
+      const event = new CustomEvent('openAuthModal', { 
+        detail: { mode: 'register' } 
+      });
+      window.dispatchEvent(event);
+      return;
+    }
+
+    // Check if user is already registered
+    if (isRegistered) {
+      console.log('User is already registered for tournament');
+      setError('You are already registered for the tournament!');
+      return;
+    }
+
+    // Check if user has stats uploaded
+    if (!extractedStats && (!user || !user.stats_data)) {
+      console.log('User needs to upload stats first');
+      setError('Please upload your SK stats first before registering for the tournament!');
       return;
     }
 
     try {
-      const result = isRegistered 
-        ? await unregisterFromTournament('PPL7')
-        : await registerForTournament('PPL7');
+      const result = await registerForTournament('PPL7');
       
       if (result.success) {
-        setIsRegistered(!isRegistered);
-        if (!isRegistered) {
-          // Show tournament registration popup and start countdown
-          setCountdown(6);
-          setShowTournamentPopup(true);
-        }
+        setIsRegistered(true);
+        // Show tournament registration popup and start countdown
+        setCountdown(6);
+        setShowTournamentPopup(true);
       } else {
         setError(result.error);
       }
     } catch (error) {
-      setError('Failed to update tournament registration');
+      setError('Failed to register for tournament');
     }
   };
 
@@ -156,6 +238,51 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
     setUploadedImage(null);
     setError('');
   };
+
+  // Listen for auth completion events
+  useEffect(() => {
+    const handleAuthComplete = (event) => {
+      console.log('Auth completed, setting shouldAutoRegister to true');
+      setShouldAutoRegister(true);
+    };
+
+    window.addEventListener('authComplete', handleAuthComplete);
+    return () => window.removeEventListener('authComplete', handleAuthComplete);
+  }, []);
+
+  // If user is already registered, show the message
+  if (showAlreadyRegistered && isRegistered) {
+    return (
+      <div className="stats-upload-overlay" onClick={(e) => e.stopPropagation()}>
+        <div className="stats-upload-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="already-registered-message">
+            <div className="message-icon">
+              <ion-icon name="checkmark-circle"></ion-icon>
+            </div>
+            <h2>You are already registered!</h2>
+            <p>You have successfully registered for the tournament.</p>
+            <div className="message-actions">
+              <button 
+                className="auth-submit-btn"
+                onClick={() => window.location.href = '/tournament'}
+              >
+                Go to Tournament Page
+              </button>
+              <button 
+                className="edit-info-btn"
+                onClick={() => {
+                  setShowAlreadyRegistered(false);
+                  setExtractedStats(null);
+                }}
+              >
+                Upload New Stats
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // If stats are extracted, show the profile card in the same modal
   if (extractedStats) {
@@ -253,13 +380,12 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
             {error && <div className="stats-message error">{error}</div>}
 
             <div className="modal-actions">
-              <button 
-                className={`register-tournament-btn ${isRegistered ? 'registered' : ''}`}
+              <RegisterButton 
                 onClick={handleTournamentRegistration}
                 disabled={isSaving}
-              >
-                {isSaving ? 'Processing...' : (isRegistered ? 'UNREGISTER FROM TOURNAMENT' : 'REGISTER FOR TOURNAMENT')}
-            </button>
+                loading={isSaving}
+                isRegistered={isRegistered}
+              />
             <button
                 className="edit-info-btn"
                 onClick={handleEditInfo}
@@ -293,6 +419,19 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
               Choose File
             </label>
           </div>
+          
+          {/* Register button for non-authenticated users */}
+          {!isAuthenticated && (
+            <div className="register-section">
+              <div className="register-divider">
+                <span>or</span>
+              </div>
+              <RegisterButton 
+                onClick={handleTournamentRegistration}
+                disabled={!isAuthenticated}
+              />
+            </div>
+          )}
         </div>
       ) : !extractedStats ? (
         <div className="image-preview-section">
@@ -324,6 +463,19 @@ const StatsUpload = ({ onClose, onProfileDisplayed }) => {
               </>
             )}
           </button>
+          
+          {/* Register button for non-authenticated users */}
+          {!isAuthenticated && (
+            <div className="register-section">
+              <div className="register-divider">
+                <span>or</span>
+              </div>
+              <RegisterButton 
+                onClick={handleTournamentRegistration}
+                disabled={!isAuthenticated}
+              />
+            </div>
+          )}
         </div>
       ) : null}
     </div>

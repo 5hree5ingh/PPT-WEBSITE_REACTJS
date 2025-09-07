@@ -262,7 +262,7 @@
   background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #ff6b6b 100%);
   color: #ffffff;
   border: none;
-  border-radius: 15px;
+  border-radius: 0px;
   padding: 12px 20px;
   font-size: 1rem;
   font-weight: 800;
@@ -297,7 +297,7 @@
 }
 
 .register-tournament-btn:hover:not(:disabled) {
-  transform: translateY(-3px) scale(1.02);
+  transform: scale(1.02);
   box-shadow: 
     0 15px 35px rgba(0, 212, 255, 0.6),
     0 8px 20px rgba(124, 58, 237, 0.5),
@@ -323,7 +323,7 @@
 }
 
 .register-tournament-btn:active:not(:disabled) {
-  transform: translateY(-1px) scale(0.98);
+  transform: scale(0.98);
   transition: all 0.1s ease;
 }
 
@@ -914,4 +914,70 @@ body:has(.stats-upload-overlay) .stats-upload-section {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
   }
+}
+
+/* Already Registered Message Styles */
+.already-registered-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-white);
+}
+
+.message-icon {
+  font-size: 4rem;
+  color: #4caf50;
+  margin-bottom: 20px;
+}
+
+.already-registered-message h2 {
+  font-size: var(--fontSize-3);
+  font-weight: var(--weight-semiBold);
+  margin-bottom: 15px;
+  color: var(--text-white);
+}
+
+.already-registered-message p {
+  font-size: var(--fontSize-6);
+  color: var(--text-gainsboro);
+  margin-bottom: 30px;
+}
+
+.message-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Register Section Styles */
+.register-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.register-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.register-divider::before,
+.register-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bg-purple-alpha-30), transparent);
+}
+
+.register-divider span {
+  padding: 0 15px;
+  color: var(--text-gainsboro);
+  font-size: var(--fontSize-6);
+  font-weight: var(--weight-medium);
+  background: var(--bg-oxford-blue);
 }

@@ -10,7 +10,16 @@ const Header = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, registerForTournament } = useAuth();
+
+  // Handle register flow - let StatsUpload component handle the registration
+  useEffect(() => {
+    if (isAuthenticated && authMode === 'register') {
+      console.log('User authenticated after register flow, StatsUpload will handle registration');
+      // Reset auth mode - StatsUpload component will handle the rest
+      setAuthMode('login');
+    }
+  }, [isAuthenticated, authMode]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,15 +32,28 @@ const Header = () => {
   useEffect(() => {
     const handleOpenStatsUpload = () => {
       console.log('Header.js - Received openStatsUpload event');
-      // Open auth modal in stats upload mode
-      setAuthMode('statsUpload');
+      // Open auth modal in register mode for tournament registration
+      setAuthMode('register');
       setIsAuthModalOpen(true);
       document.body.classList.add('modal-open');
-      console.log('Header.js - Auth modal opened in statsUpload mode');
+      console.log('Header.js - Auth modal opened in register mode');
+    };
+
+    const handleOpenAuthModal = (event) => {
+      console.log('Header.js - Received openAuthModal event', event.detail);
+      const mode = event.detail?.mode || 'register';
+      setAuthMode(mode);
+      setIsAuthModalOpen(true);
+      document.body.classList.add('modal-open');
+      console.log('Header.js - Auth modal opened in', mode, 'mode');
     };
 
     window.addEventListener('openStatsUpload', handleOpenStatsUpload);
-    return () => window.removeEventListener('openStatsUpload', handleOpenStatsUpload);
+    window.addEventListener('openAuthModal', handleOpenAuthModal);
+    return () => {
+      window.removeEventListener('openStatsUpload', handleOpenStatsUpload);
+      window.removeEventListener('openAuthModal', handleOpenAuthModal);
+    };
   }, []);
 
   const handleNavToggle = () => {
@@ -51,6 +73,17 @@ const Header = () => {
   const handleCloseModal = () => {
     setIsAuthModalOpen(false);
     document.body.classList.remove('modal-open');
+    // Dispatch auth complete event if user is authenticated
+    if (isAuthenticated && authMode === 'register') {
+      const event = new CustomEvent('authComplete', { 
+        detail: { mode: authMode } 
+      });
+      window.dispatchEvent(event);
+    }
+    // Reset auth mode after modal closes
+    if (authMode === 'register') {
+      setAuthMode('login');
+    }
   };
 
   const handleLogout = () => {
