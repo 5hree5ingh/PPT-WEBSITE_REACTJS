@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import apiService from '../../services/api';
 
+// GOOGLE SIGNUP FLOW - STEP 2: Discord Username Input Component
+// This component handles Discord username input after Google OAuth login
 const DiscordUsernameInput = ({ onComplete, onSkip, user }) => {
-  const [discordUsername, setDiscordUsername] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // State variables for Discord username input
+  const [discordUsername, setDiscordUsername] = useState(''); // User's Discord username
+  const [loading, setLoading] = useState(false);              // Loading state for API call
+  const [error, setError] = useState('');                     // Error messages
 
+  // GOOGLE SIGNUP FLOW - STEP 2A: Submit Discord username to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate Discord username is not empty
     if (!discordUsername.trim()) {
       setError('Please enter your Discord username');
       return;
@@ -21,10 +26,12 @@ const DiscordUsernameInput = ({ onComplete, onSkip, user }) => {
       console.log('Attempting to update Discord username:', discordUsername.trim());
       console.log('Auth token:', apiService.getAuthToken());
       
+      // Call backend to update Discord username
       const result = await apiService.updateDiscordUsername(discordUsername.trim());
       console.log('Discord username update result:', result);
       
       if (result.message) {
+        // Success - call completion handler to proceed to next step
         onComplete(discordUsername.trim());
       } else {
         setError(result.error || 'Failed to update Discord username');

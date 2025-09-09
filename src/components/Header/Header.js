@@ -4,15 +4,18 @@ import logo from '../../assests/images/logo5.png';
 import AuthModal from '../Auth/AuthModal';
 import { useAuth } from '../../contexts/AuthContext';
 
+// Header component that contains navigation and authentication controls
 const Header = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
+  // State variables for header functionality
+  const [isActive, setIsActive] = useState(false);           // Header scroll state
+  const [isNavOpen, setIsNavOpen] = useState(false);         // Mobile navigation state
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); // Auth modal visibility
+  const [authMode, setAuthMode] = useState('login');         // Auth modal mode (login/signup/register)
 
+  // Get authentication state and functions from context
   const { isAuthenticated, user, logout, registerForTournament } = useAuth();
 
-  // Handle register flow - let StatsUpload component handle the registration
+  // EFFECT 1: Handle register flow completion
   useEffect(() => {
     if (isAuthenticated && authMode === 'register') {
       console.log('User authenticated after register flow, StatsUpload will handle registration');
@@ -21,6 +24,7 @@ const Header = () => {
     }
   }, [isAuthenticated, authMode]);
 
+  // EFFECT 2: Handle header scroll state for styling
   useEffect(() => {
     const handleScroll = () => {
       setIsActive(window.scrollY > 100);
@@ -29,7 +33,9 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // EFFECT 3: Listen for custom events to open auth modal
   useEffect(() => {
+    // Handle openStatsUpload event (from Hero component register button)
     const handleOpenStatsUpload = () => {
       console.log('Header.js - Received openStatsUpload event');
       // Open auth modal in register mode for tournament registration
@@ -39,6 +45,7 @@ const Header = () => {
       console.log('Header.js - Auth modal opened in register mode');
     };
 
+    // Handle openAuthModal event (from StatsUpload component)
     const handleOpenAuthModal = (event) => {
       console.log('Header.js - Received openAuthModal event', event.detail);
       const mode = event.detail?.mode || 'register';
@@ -48,14 +55,18 @@ const Header = () => {
       console.log('Header.js - Auth modal opened in', mode, 'mode');
     };
 
+    // Add event listeners
     window.addEventListener('openStatsUpload', handleOpenStatsUpload);
     window.addEventListener('openAuthModal', handleOpenAuthModal);
+    
+    // Cleanup event listeners
     return () => {
       window.removeEventListener('openStatsUpload', handleOpenStatsUpload);
       window.removeEventListener('openAuthModal', handleOpenAuthModal);
     };
   }, []);
 
+  // NAVIGATION HANDLERS
   const handleNavToggle = () => {
     setIsNavOpen(!isNavOpen);
   };
@@ -64,16 +75,19 @@ const Header = () => {
     setIsNavOpen(false);
   };
 
+  // AUTHENTICATION HANDLERS
+  // Handle clicking Sign Up/Login buttons in header
   const handleAuthClick = (mode = 'login') => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
-    document.body.classList.add('modal-open');
+    setAuthMode(mode);                    // Set auth mode (login/signup)
+    setIsAuthModalOpen(true);             // Open auth modal
+    document.body.classList.add('modal-open'); // Prevent body scroll
   };
 
+  // Handle closing auth modal
   const handleCloseModal = () => {
     setIsAuthModalOpen(false);
     document.body.classList.remove('modal-open');
-    // Dispatch auth complete event if user is authenticated
+    // Dispatch auth complete event if user is authenticated and in register mode
     if (isAuthenticated && authMode === 'register') {
       const event = new CustomEvent('authComplete', { 
         detail: { mode: authMode } 
@@ -86,6 +100,7 @@ const Header = () => {
     }
   };
 
+  // Handle user logout
   const handleLogout = () => {
     logout();
     setIsNavOpen(false);
@@ -190,7 +205,7 @@ const Header = () => {
         </div>
       </div>
 
-            {/* Authentication Modal */}
+            {/* Authentication Modal - Pass authMode as initialMode */}
       <AuthModal isOpen={isAuthModalOpen} onClose={handleCloseModal} initialMode={authMode} />
     </header>
   );

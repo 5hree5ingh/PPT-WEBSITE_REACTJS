@@ -2,15 +2,20 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './EmailVerification.css';
 
+// EMAIL SIGNUP FLOW - STEP 2: OTP Verification Component
+// This component handles the email verification step after user signs up
 const EmailVerification = ({ email, onVerificationComplete, onBack, isVerifying }) => {
-  const [otp, setOtp] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
+  // State variables for OTP verification
+  const [otp, setOtp] = useState('');              // User's entered OTP
+  const [loading, setLoading] = useState(false);   // Loading state for API calls
+  const [message, setMessage] = useState('');      // Success messages
+  const [error, setError] = useState('');          // Error messages
+  const [showPopup, setShowPopup] = useState(false); // Popup for resend confirmation
 
+  // Get authentication functions from context
   const { verifyOTP, resendOTP } = useAuth();
 
+  // Handle OTP input changes - only allow numbers and limit to 6 digits
   const handleOTPChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').slice(0, 6);
     setOtp(value);
@@ -21,9 +26,11 @@ const EmailVerification = ({ email, onVerificationComplete, onBack, isVerifying 
     }
   };
 
+  // EMAIL SIGNUP FLOW - STEP 2A: Verify the OTP entered by user
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     
+    // Validate OTP length
     if (otp.length !== 6) {
       setError('Please enter a valid 6-digit OTP');
       return;
@@ -33,10 +40,12 @@ const EmailVerification = ({ email, onVerificationComplete, onBack, isVerifying 
     setError('');
     setMessage('');
 
+    // Call backend to verify OTP
     const result = await verifyOTP(email, otp);
     
     if (result.success) {
       setMessage('Email verified successfully! You can now login.');
+      // Wait 2 seconds then call completion handler (which will auto-login user)
       setTimeout(() => {
         onVerificationComplete();
       }, 2000);
@@ -47,15 +56,18 @@ const EmailVerification = ({ email, onVerificationComplete, onBack, isVerifying 
     setLoading(false);
   };
 
+  // Helper function: Resend OTP if user didn't receive it
   const handleResendOTP = async () => {
     setLoading(true);
     setError('');
     setMessage('');
 
+    // Call backend to resend OTP
     const result = await resendOTP(email);
     
     if (result.success) {
       setShowPopup(true);
+      // Hide popup after 5 seconds
       setTimeout(() => {
         setShowPopup(false);
       }, 5000);
