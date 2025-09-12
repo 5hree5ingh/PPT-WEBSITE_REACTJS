@@ -10,6 +10,7 @@ import Cursor from './components/Cursor/Cursor';
 import BackToTop from './components/BackToTop/BackToTop';
 import Tournament from './components/Tournament/Tournament';
 import Portfolio from './components/Portfolio/Portfolio';
+import PPT from './pages/PPT';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
@@ -62,6 +63,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/tournament" element={<Tournament />} />
               <Route path="/contact" element={<Portfolio />} />
+              <Route path="/ppt" element={<PPT />} />
             </Routes>
             <Cursor />
             <BackToTop />
